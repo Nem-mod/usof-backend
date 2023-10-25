@@ -15,7 +15,6 @@ export const getAllUsers = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error);
         res.status(500).json({
             message: 'error'
         });
@@ -52,7 +51,7 @@ export const createUser = async (req, res) => {
         const data = req.body;
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(data.password, salt);
-        const user = await UserModel.create({
+        await UserModel.create({
             ...data,
             password: hash
         }).catch(error => {
