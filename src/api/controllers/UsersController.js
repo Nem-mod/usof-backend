@@ -1,9 +1,9 @@
-import {User} from "../models/User.js";
+import {UserModel} from "../models/index.js";
 import bcrypt from "bcrypt";
 
 export const getAllUsers = async (req, res) => {
     try {
-        const data = await User.findAll({
+        const data = await UserModel.findAll({
             attributes: ["id", "login", "fname", "lname", "rating", "profile_picture_url"],
             where: {
                 isVerified: true
@@ -25,7 +25,7 @@ export const getAllUsers = async (req, res) => {
 
 export const getUser = async (req, res) => {
     try {
-        const user = await User.findOne({
+        const user = await UserModel.findOne({
             attributes: ["id", "login", "fname", "lname", "rating", "profile_picture_url"],
             where: {
                 id: req.params.id
@@ -52,7 +52,7 @@ export const createUser = async (req, res) => {
         const data = req.body;
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(data.password, salt);
-        const user = await User.create({
+        const user = await UserModel.create({
             ...data,
             password: hash
         }).catch(error => {
@@ -87,7 +87,7 @@ export const editMe = async (req, res) => {
     try {
         const data = req.body;
 
-        const user = await User.findOne({
+        const user = await UserModel.findOne({
             where: {
                 id: req.userId
             }
@@ -120,7 +120,7 @@ export const updateUser = async (req, res) => {
     try {
         const data = req.body;
 
-        const user = await User.findOne({
+        const user = await UserModel.findOne({
             where: {
                 id: req.params.id
             }
@@ -152,7 +152,7 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
     try {
-        await User.destroy({
+        await UserModel.destroy({
             where: {
                 id: req.params.id
             }

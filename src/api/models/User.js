@@ -1,7 +1,6 @@
-import {sequelize} from "./index.js";
 import {DataTypes} from "sequelize";
 
-export const User = sequelize.define('user', {
+export default {
     id: {
         type: DataTypes.BIGINT.UNSIGNED,
         primaryKey: true,
@@ -60,29 +59,4 @@ export const User = sequelize.define('user', {
         allowNull: false,
         defaultValue: false
     }
-});
-
-
-export const VerificationCode = sequelize.define('verification_code', {
-    id: {
-        type: DataTypes.BIGINT.UNSIGNED,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-    },
-
-    code: {
-        type: DataTypes.STRING(6),
-        allowNull: false,
-        unique: true
-    }
-});
-
-User.hasOne(VerificationCode);
-VerificationCode.belongsTo(User);
-
-(async () => {
-    // Пересоздаем таблицу в БД
-    await sequelize.sync()
-    // дальнейший код
-})()
+}

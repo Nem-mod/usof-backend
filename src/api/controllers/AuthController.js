@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import {User, VerificationCode} from "../models/User.js";
+import {UserModel, VerificationCodeModel} from "../models/index.js";
 import jwt from "jsonwebtoken";
 import {jwtSecretKey} from "../../config/index.js";
 import {sendCodeToEmail, generateRandomCode} from "../../utils/utils.js"
@@ -14,13 +14,13 @@ export const register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(data.password, salt);
 
-        const {dataValues: user} = await User.create({
+        const {dataValues: user} = await UserModel.create({
             ...data,
             password: hash
         })
 
 
-        await VerificationCode.create({
+        await VerificationCodeModel.create({
             code: confirmCode,
             userId: user.id
         })
@@ -41,7 +41,7 @@ export const register = async (req, res) => {
 export const verifyAccount = async (req, res) => {
     try {
         const {confirmCode} = req.body;
-        const verification = await VerificationCode.findOne({
+        const verification = await VerificationCodeModel.findOne({
             where: {
                 code: confirmCode
             }
@@ -50,7 +50,7 @@ export const verifyAccount = async (req, res) => {
         if(verification?.dataValues?.code !== confirmCode)
             throw "code is invalid";
 
-        const user = await User.findOne({
+        const user = await UserModel.findOne({
             where: {
                 id: verification.userId
             }
@@ -69,18 +69,18 @@ export const verifyAccount = async (req, res) => {
         res.status(500).json({
             message: `Verification error: ${error}`
         });
-    };
+    }
 }
 
 export const login = async (req, res) => {
     try {
-        const user = await User.findOne({
+        const user = await UserModel.findOne({
             where: {
                 email: req.body.email
             }
         });
 
-        if (!user.dataValues || user?.dataValues?.isVerified != true) {
+        if (!user.dataValues || user?.dataValues?.isVerified !== true) {
             return res.status(404).json({
                 message: 'Error'
             })
@@ -123,7 +123,7 @@ export const getVerificationCode = async (req, res) => {
     try {
         const userId = req.userId;
 
-        const user = await User.findOne({
+        const user = await UserModel.findOne({
             where: {
                 id: userId
             }
@@ -132,8 +132,8 @@ export const getVerificationCode = async (req, res) => {
         const confirmCode = generateRandomCode(5);
         await sendCodeToEmail(user.dataValues.email,  confirmCode)
 
-        await VerificationCode.sync().then(() => {
-            VerificationCode.findOrCreate({
+        await VerificationCodeModel.sync().then(() => {
+            VerificationCodeModel.findOrCreate({
                 where: {
                     userId: userId
                 },
@@ -163,7 +163,7 @@ export const getVerificationCode = async (req, res) => {
         res.status(500).json({
             message: `Get verification code error: ${error}`
         });
-    };
+    }
 }
 
 
@@ -172,20 +172,20 @@ export const resetPassword = async (req, res) => {
     try {
         const {confirmCode, ...data} = req.body;
         const userId = req.userId;
-        const verification = await VerificationCode.findOne({
+        const verification = await VerificationCodeModel.findOne({
             where: {
                 userId: userId
             }
         })
 
         if(!verification)
-            throw "reset password error"
+            throw "reset password error";
 
 
         if(verification.dataValues.code !== confirmCode)
             throw "code is invalid";
 
-        const user = await User.findOne({
+        const user = await UserModel.findOne({
             where: {
                 id: verification.dataValues.userId
             }
@@ -214,7 +214,7 @@ export const getUser = async (req, res) => {
     try {
         const {userId} = req.body;
 
-        const user = await User.findOne({
+        const user = await UserModel.findOne({
             where: {
                 id: userId
             }

@@ -1,8 +1,8 @@
-import {User} from "../models/User.js";
+import {UserModel} from "../models/index.js";
 
 export default async (req, res, next) => {
     try {
-        const user = await User.findOne({
+        const user = await UserModel.findOne({
             where: {
                 id: req.userId
             }
