@@ -1,5 +1,5 @@
 import {gmailUser} from "../config/index.js";
-import {transporter} from "../helpers/mailer.js";
+import {transporter} from "./utils.js";
 
 export default async (email, confirmCode) => {
     const mailOptions = {

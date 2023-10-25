@@ -2,8 +2,7 @@ import bcrypt from "bcrypt";
 import {User, VerificationCode} from "../models/User.js";
 import jwt from "jsonwebtoken";
 import {jwtSecretKey} from "../../config/index.js";
-import generateRandomCode from "../../utils/helpers/generate-random-code.js";
-import sendCodeToEmail from "../../utils/send-code-to-email.js";
+import {sendCodeToEmail, generateRandomCode} from "../../utils/utils.js"
 
 export const register = async (req, res) => {
     try {
