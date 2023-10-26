@@ -33,7 +33,7 @@ export const getPostsWithCategory = async (req, res) => {
         const {limit, offset} = getPagination(page, size);
         await PostModel.findAndCountAll({
             include: {
-                attributes: ["id", "title"],
+                attributes: [],
                 model: CategoryModel,
                 as: "postCategories",
                 where: {id: id},
@@ -44,7 +44,7 @@ export const getPostsWithCategory = async (req, res) => {
         }).then(data => {
             const response = getPagingData(data, page, limit);
             res.send(response);
-        })
+        });
     } catch (e) {
         res.status(500).json({
             message: "internal server error"
