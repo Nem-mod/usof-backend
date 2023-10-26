@@ -71,10 +71,14 @@ export const createUser = async (req, res) => {
 
 export const uploadAvatar = async (req, res) => {
     try {
-        // TODO: Update user avatar in db. Main problem is multiple req with json and file.
-        res.json({
-            url: `/uploads/${req.file.originalname}`
+        const userId = req.userId;
+        const user = await UserModel.findOne({
+            where: {id: userId}
         })
+        await user.update({profile_picture_url: `/uploads/${req.file.originalname}`});
+
+        res.json(user)
+
     } catch (error) {
         res.status(500).json({
             message: 'Error upload img'
