@@ -183,7 +183,7 @@ export const remove = async (req, res) => {
         const id = req.params.id;
         const userId = req.userId;
         const post = await PostModel.findOne({where: {id: id}});
-        const user = await UserModel.findOne({where:{id: userId}});
+        const user = await UserModel.findOne({where: {id: userId}});
 
         if (userId !== post.dataValues.author && user.dataValues.role !== "admin")
             res.json({message: "accesses denied"});
@@ -191,6 +191,26 @@ export const remove = async (req, res) => {
         await post.destroy();
         res.json({message: "success"});
 
+    } catch (error) {
+        res.status(500).json({
+            message: "internal server error"
+        })
+    }
+}
+
+export const getCategories = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const categories = await CategoryModel.findAndCountAll({
+            include: {
+                attributes: [],
+                model: PostModel,
+                as: "categoryPosts",
+                where: {id: id},
+            },
+        });
+
+        res.json(categories);
     } catch (error) {
         res.status(500).json({
             message: "internal server error"
