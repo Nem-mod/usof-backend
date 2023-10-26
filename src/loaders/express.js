@@ -46,7 +46,9 @@ export default (app) => {
     app.use((_req, _res, next) => {
         const error = new Error('Endpoint could not find!');
         error.status = 404;
-        next(error);
+        _res.status(404).json({
+            message: "endpoint not found"
+        })
     });
 
 }
