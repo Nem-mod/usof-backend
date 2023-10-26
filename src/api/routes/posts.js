@@ -10,6 +10,7 @@ router.post('/', ...postValidator, handleErrors, checkAuth, PostController.creat
 router.get('/', PostController.getPosts);
 router.get('/:id', PostController.getPost);
 
-router.get('/:id/comments', CommentController.getComments)
-router.post('/:id/comments', checkAuth, CommentController.createComment)
+router.get('/:id/comments', PostController.getComments)
+router.post('/:id/comments', checkAuth, PostController.createComment);
+
 export default router;
