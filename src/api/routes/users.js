@@ -9,7 +9,7 @@ import {handleErrors} from "../../utils/utils.js";
 const router = Router();
 
 router.get('/', UserController.getAllUsers);
-router.get('/:id', getUser);
+router.get('/:id', UserController.getUser);
 router.post('/', ...registerValidator, handleErrors, checkAuth, checkIsAdmin, UserController.createUser);
 router.patch("/avatar", checkAuth, upload.single('file'), UserController.uploadAvatar);
 router.patch('/me', checkAuth, UserController.editMe);
