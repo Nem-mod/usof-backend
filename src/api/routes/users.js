@@ -1,13 +1,5 @@
 import {Router} from "express";
-import {
-    createUser,
-    getAllUsers,
-    getUser,
-    editMe,
-    uploadAvatar,
-    updateUser,
-    deleteUser
-} from "../controllers/UsersController.js";
+import {UserController} from "../controllers/controllers.js";
 import {upload} from "../../storage.js";
 import checkAuth from "../middlewares/checkAuth.js";
 import checkIsAdmin from "../middlewares/checkIsAdmin.js";
@@ -16,11 +8,11 @@ import {handleErrors} from "../../utils/utils.js";
 
 const router = Router();
 
-router.get('/', getAllUsers);
+router.get('/', UserController.getAllUsers);
 router.get('/:id', getUser);
-router.post('/', ...registerValidator, handleErrors, checkAuth, checkIsAdmin, createUser);
-router.patch("/avatar", checkAuth, upload.single('file'), uploadAvatar);
-router.patch('/me', checkAuth, editMe);
-router.patch('/:id', checkAuth, checkIsAdmin, updateUser);
-router.delete('/:id', checkAuth, checkIsAdmin, deleteUser);
+router.post('/', ...registerValidator, handleErrors, checkAuth, checkIsAdmin, UserController.createUser);
+router.patch("/avatar", checkAuth, upload.single('file'), UserController.uploadAvatar);
+router.patch('/me', checkAuth, UserController.editMe);
+router.patch('/:id', checkAuth, checkIsAdmin, UserController.updateUser);
+router.delete('/:id', checkAuth, checkIsAdmin, UserController.deleteUser);
 export default router
