@@ -1,5 +1,6 @@
 import {getPagination, getPagingData} from "../../utils/utils.js";
-import {CategoryModel, CommentModel, PostModel, UserModel} from "../models/index.js";
+import {CategoryModel, CommentModel, LikeModel, PostModel, UserModel} from "../models/index.js";
+import exp from "constants";
 
 
 export const getPost = async (req, res) => {

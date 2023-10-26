@@ -49,7 +49,7 @@ CategoryModel.belongsToMany(PostModel, {
 CommentModel.belongsTo(UserModel, { foreignKey: 'author' });
 CommentModel.belongsTo(PostModel, { foreignKey: 'parent' });
 
-LikeModel.belongsTo(UserModel, { foreignKey: 'user_id' });
+LikeModel.belongsTo(UserModel, { foreignKey: 'userId' });
 
 
 (async () => {
