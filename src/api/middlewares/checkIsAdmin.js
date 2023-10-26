@@ -11,7 +11,6 @@ export default async (req, res, next) => {
         if (!user || user.role !== "admin") {
             throw "Permission denied";
         }
-
         next();
     } catch (error) {
         res.status(403).json({
