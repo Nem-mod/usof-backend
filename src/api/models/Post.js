@@ -23,8 +23,5 @@ export default {
         type: DataTypes.ENUM('active', 'inactive'),
         allowNull: false,
         default: 'active'
-    },
-    categories: {
-        type: DataTypes.BIGINT,
-    },
+    }
 };

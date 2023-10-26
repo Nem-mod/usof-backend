@@ -13,4 +13,6 @@ router.get('/:id', PostController.getPost);
 router.get('/:id/comments', PostController.getComments)
 router.post('/:id/comments', checkAuth, PostController.createComment);
 
+router.patch('/:id', checkAuth, PostController.update);
+router.delete('/:id', checkAuth, PostController.remove);
 export default router;
