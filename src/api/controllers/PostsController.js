@@ -50,7 +50,7 @@ export const getPosts = async (req, res) => {
             offset
         }).then(data => {
             const response = getPagingData(data, page, limit);
-            res.send(response);
+            res.status(200).json(response);
         })
 
     } catch (error) {

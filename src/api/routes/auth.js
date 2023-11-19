@@ -15,6 +15,8 @@ router.post('/register/verification', AuthController.verifyAccount);
 
 router.post('/send-verification-code', checkAuth, AuthController.getVerificationCode);
 
+router.get('/me', checkAuth, AuthController.getUser);
+
 router.post('/password-reset', checkAuth, AuthController.resetPassword);
 
 export default router

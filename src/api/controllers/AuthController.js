@@ -25,14 +25,25 @@ export const register = async (req, res) => {
             userId: user.id
         })
 
+        const token = jwt.sign(
+            {
+                _id: user.id
+            },
+            jwtSecretKey,
+            {
+                expiresIn: '30m'
+            }
+        );
+
 
         res.json({
             message: "Verification code was sent to your email.",
+            redirect: token
         });
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({
+        res.status(400).json({
             message: 'Registration error'
         });
     };
@@ -40,10 +51,13 @@ export const register = async (req, res) => {
 
 export const verifyAccount = async (req, res) => {
     try {
-        const {confirmCode} = req.body;
+        const {confirmCode, token} = req.body;
+        const decoded = jwt.verify(token, jwtSecretKey);
+
         const verification = await VerificationCodeModel.findOne({
             where: {
-                code: confirmCode
+                code: confirmCode,
+                userId: decoded._id
             }
         })
 
@@ -118,6 +132,30 @@ export const login = async (req, res) => {
     }
 };
 
+
+export const getUser = async (req, res) => {
+    try {
+        const user = await UserModel.findOne({
+            where: {
+                id: req.userId
+            }
+        });
+
+        if(!user.dataValues) {
+            return res.status(400).json({
+                message: 'User is not found'
+            });
+        }
+
+        const {passwordHash, ...userData} = user.dataValues;
+        res.json(userData);
+
+    } catch (error) {
+        return res.status(500).json({
+            message: 'No permission'
+        });
+    }
+}
 
 export const getVerificationCode = async (req, res) => {
     try {
@@ -208,29 +246,4 @@ export const resetPassword = async (req, res) => {
     }
 
 
-}
-
-export const getUser = async (req, res) => {
-    try {
-        const {userId} = req.body;
-
-        const user = await UserModel.findOne({
-            where: {
-                id: userId
-            }
-        });
-        if (!user) {
-            return res.status(400).json({
-                message: 'User is not found'
-            });
-        }
-
-        const {password, createdAt, updatedAt, email, ...userData} = user;
-        res.json(userData);
-
-    } catch (error) {
-        return res.status(500).json({
-            message: 'Permission denied'
-        });
-    }
 }
