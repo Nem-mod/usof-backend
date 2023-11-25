@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 const loginValidator = [
-    body('email', 'Incorrect email').isEmail(),
+    body('login', 'Incorrect email').isString(),
     body('password' ,'Incorrect password').isLength({ min: 5 }),
 ];
 

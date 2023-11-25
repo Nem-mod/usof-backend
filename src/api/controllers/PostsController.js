@@ -25,9 +25,7 @@ export const getPost = async (req, res) => {
 
 
         })
-        res.json({
-            post
-        })
+        res.json({...post.dataValues})
     } catch (error) {
         res.status(500).json({
             message: "Internal server error"

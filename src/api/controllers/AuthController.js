@@ -90,7 +90,7 @@ export const login = async (req, res) => {
     try {
         const user = await UserModel.findOne({
             where: {
-                email: req.body.email
+                login: req.body.login
             }
         });
 
