@@ -36,16 +36,23 @@ export const getPost = async (req, res) => {
 export const getPosts = async (req, res) => {
     try {
         const {page, size} = req.query;
+
         const {limit, offset} = getPagination(page, size);
         await PostModel.findAndCountAll({
+            // distinct: true,
             include: {
                 attributes: ["id", "title"],
                 model: CategoryModel,
                 as: "postCategories",
                 nested: true
             },
-            limit,
-            offset
+            order: [
+                ["id", "DESC"],
+            ],
+            offset: offset,
+            limit: limit,
+
+            subQuery: false,
         }).then(data => {
             const response = getPagingData(data, page, limit);
             res.status(200).json(response);
