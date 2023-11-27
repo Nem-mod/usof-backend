@@ -75,7 +75,7 @@ export const uploadAvatar = async (req, res) => {
         const user = await UserModel.findOne({
             where: {id: userId}
         })
-        await user.update({profile_picture_url: `/uploads/${req.file.originalname}`});
+        await user.update({profile_picture_url: `${req.fileName}`});
 
         res.json(user)
 
