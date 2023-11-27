@@ -102,7 +102,7 @@ export const editMe = async (req, res) => {
             });
         }
 
-        if (data?.password) {
+        if (data.password) {
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(data.password, salt);
             data.password = hash
