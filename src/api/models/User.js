@@ -40,7 +40,6 @@ export default {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
-
     },
 
     profile_picture_url: {

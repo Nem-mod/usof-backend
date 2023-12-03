@@ -1,24 +1,61 @@
-import {LikeModel} from "../../models/index.js";
+import {CommentModel, LikeModel, PostModel} from "../../models/index.js";
 
 export const createLike = async (req, res) => {
     try {
         const {type, entityType} = req.body;
-        const postId = req.params.id;
+        const entityId = req.params.id;
         const userId = req.userId;
+        let entity = null;
 
-        await LikeModel.findOrCreate({
+        if (entityType === "post")
+            entity = await PostModel.findOne({
+                where: {id: entityId}
+            })
+        else if (entityType === "comment")
+            entity = await CommentModel.findOne({
+                where: {id: entityId}
+            })
+
+
+        if (!entity)
+            return res.status(400).json({message: "invalid object"});
+
+        const like = await LikeModel.findOne({
             where: {
                 userId: userId,
-                entityId: postId,
+                entityId: entityId,
                 entityType: entityType,
             },
-            defaults: {
+
+        });
+
+        if (!like) {
+            await LikeModel.create({
                 userId: userId,
-                entityId: postId,
+                entityId: entityId,
                 entityType: entityType,
                 type: type
+            })
+
+            if (type === "like") {
+                await entity.increment("rating", {by: 1});
+            } else {
+                await entity.decrement("rating", {by: 1});
             }
-        });
+
+        } else {
+            if (like.dataValues.type != type) {
+                if (type === "like") {
+                    await entity.increment("rating", {by: 1});
+                } else {
+                    await entity.decrement("rating", {by: 1});
+                }
+            }
+            await like.update({type: type});
+        }
+
+
+        await entity.save()
 
 
         res.json({message: "success"});

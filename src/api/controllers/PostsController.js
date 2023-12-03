@@ -1,6 +1,5 @@
 import {getPagination, getPagingData} from "../../utils/utils.js";
 import {CategoryModel, CommentModel, LikeModel, PostModel, UserModel} from "../models/index.js";
-import exp from "constants";
 
 
 export const getPost = async (req, res) => {
@@ -18,7 +17,7 @@ export const getPost = async (req, res) => {
                     nested: true
                 },
                 {
-                    attributes: ["id", "login", "rating", "role"],
+                    attributes: ["id", "login", "fname", "lname", "rating", "profile_picture_url", "rating"],
                     model: UserModel
                 }
             ]
@@ -39,13 +38,24 @@ export const getPosts = async (req, res) => {
 
         const {limit, offset} = getPagination(page, size);
         await PostModel.findAndCountAll({
-            // distinct: true,
-            include: {
-                attributes: ["id", "title"],
-                model: CategoryModel,
-                as: "postCategories",
-                nested: true
+            where: {
+                status: "active"
             },
+            // distinct: true,
+            include: [
+                {
+                    attributes: ["id", "login", "fname", "lname", "rating", "profile_picture_url", "rating"],
+                    model: UserModel,
+                    as: "user",
+                    nested: true
+                },
+                {
+                    attributes: ["id", "title"],
+                    model: CategoryModel,
+                    as: "postCategories",
+                    nested: true
+                },
+            ],
             order: [
                 ["id", "DESC"],
             ],
@@ -120,7 +130,15 @@ export const getComments = async (req, res) => {
         const comments = await CommentModel.findAndCountAll({
             where: {
                 parent: postId
-            }
+            },
+            include: [
+                {
+                    attributes: ["id", "login", "fname", "lname", "rating", "profile_picture_url", "rating"],
+                    model: UserModel,
+                    as: "user",
+                    nested: true
+                }
+            ],
         });
 
         res.json(comments)

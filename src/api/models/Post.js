@@ -23,5 +23,10 @@ export default {
         type: DataTypes.ENUM('active', 'inactive'),
         allowNull: false,
         default: 'active'
-    }
+    },
+    rating: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
 };

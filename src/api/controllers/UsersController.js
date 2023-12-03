@@ -1,4 +1,4 @@
-import {UserModel} from "../models/index.js";
+import {CategoryModel, PostModel, UserModel} from "../models/index.js";
 import bcrypt from "bcrypt";
 
 export const getAllUsers = async (req, res) => {
@@ -25,10 +25,11 @@ export const getAllUsers = async (req, res) => {
 export const getUser = async (req, res) => {
     try {
         const user = await UserModel.findOne({
-            attributes: ["id", "login", "fname", "lname", "rating", "profile_picture_url"],
+            attributes: ["id", "login", "fname", "lname", "rating", "profile_picture_url", "rating"],
             where: {
                 id: req.params.id
             }
+
         })
         if (!user) {
             return res.status(400).json({
@@ -36,12 +37,27 @@ export const getUser = async (req, res) => {
             });
         }
 
+        const usersPosts = await PostModel.findAll({
+            where: {
+                author: req.params.id
+            },
+            include: {
+                attributes: ["id", "title"],
+                model: CategoryModel,
+                as: "postCategories",
+                nested: true
+            },
+            order: [
+                ["id", "DESC"],
+            ],
+            limit: 5,
+        })
         const userData = user.dataValues;
-        res.json(userData);
+        res.json({...userData, last_posts: usersPosts});
 
     } catch (error) {
         return res.status(500).json({
-            message: 'Permission denied'
+            message: error
         });
     }
 };
@@ -150,7 +166,6 @@ export const updateUser = async (req, res) => {
         });
     }
 }
-
 
 
 export const deleteUser = async (req, res) => {
