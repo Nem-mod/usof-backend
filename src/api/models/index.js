@@ -54,6 +54,6 @@ LikeModel.belongsTo(UserModel, { foreignKey: 'userId' });
 
 (async () => {
     // Пересоздаем таблицу в БД
-    await sequelize.sync({ alter: true })
+    await sequelize.sync()
     // дальнейший код
 })()
